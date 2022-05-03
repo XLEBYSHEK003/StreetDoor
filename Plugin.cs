@@ -2,16 +2,15 @@
 using Exiled.API.Features;
 using Exiled.Events.Handlers;
 
-namespace StreetDoor
+namespace DoorStreet
 {
-    public class Plugin : Plugin<Config>
+    internal class Plugin : Plugin<Config>
     {
-
         public override string Prefix
         {
             get
             {
-                return "StreetDoor";
+                return "DoorStreet";
             }
         }
 
@@ -20,7 +19,7 @@ namespace StreetDoor
         {
             get
             {
-                return "StreetDoor";
+                return "DoorStreet";
             }
         }
 
@@ -28,7 +27,7 @@ namespace StreetDoor
         {
             get
             {
-                return "XLEBYSHEK";
+                return "XLEB_YSHEK";
             }
         }
 
@@ -38,7 +37,7 @@ namespace StreetDoor
 
         public override void OnEnabled()
         {
-            this.handlers = new EventHandlers(this);
+            this.handlers = new EventHandler(this);
             Log.Info(string.Format("Plugin {0} ({1}) by {2} enabled sucessfully!", this.Name, this.Version, this.Author));
             this.RegisterEvents();
         }
@@ -54,13 +53,13 @@ namespace StreetDoor
             Exiled.Events.Handlers.Server.RoundStarted += this.handlers.OnRoundStart;
             Exiled.Events.Handlers.Server.WaitingForPlayers += this.handlers.OnWaitingForPlayers;
         }
-        
+
         public void UnregisterEvents()
         {
             Exiled.Events.Handlers.Server.RoundStarted -= this.handlers.OnRoundStart;
             Exiled.Events.Handlers.Server.WaitingForPlayers -= this.handlers.OnWaitingForPlayers;
         }
 
-        public EventHandlers handlers;
+        public EventHandler handlers;
     }
 }
