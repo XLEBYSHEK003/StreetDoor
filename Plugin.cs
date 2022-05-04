@@ -10,7 +10,7 @@ namespace DoorStreet
         {
             get
             {
-                return "DoorStreet";
+                return "StreetDoor";
             }
         }
 
@@ -19,7 +19,7 @@ namespace DoorStreet
         {
             get
             {
-                return "DoorStreet";
+                return "StreetDoor";
             }
         }
 

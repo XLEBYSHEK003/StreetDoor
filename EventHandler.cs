@@ -3,7 +3,6 @@ using Exiled.API.Features.Toys;
 using Exiled.API.Features;
 using Mirror;
 using UnityEngine;
-using UnityEngine.Networking;
 using System.Threading;
 
 namespace DoorStreet
@@ -23,18 +22,20 @@ namespace DoorStreet
             this.SpawnHCZDoor(new Vector3(14.3f, 995.2103f, -23.542f));
             this.StenaPered(new Vector3(83.6f, 987.94f, -64.85f)); 
             this.StenaVerc(new Vector3(83.6f, 991.05f, -64.85f));
+            this.Fly(new Vector3(84.62f, 988.78f, -69.13f), new Vector3(-0.13f, 1.97f, 4.65f), new Vector3(0, 90, 0));
             this.Stenalevo(new Vector3(86.45f, 987.94f, -62.155f), new Vector3(0, -90, 0), new Vector3(0.21f, 1.7f, 5.8f));
+            Thread.Sleep(10000);
             this.Stenalevo(new Vector3(86.45f, 991.05f, -62.155f), new Vector3(0, -90, 0), new Vector3(0.21f, 2.85f, 5.8f));
             this.Zad(new Vector3(89.31f, 991.62f, -64.62f), new Vector3(0, 0, 0), new Vector3(0.08f, 1.7f, 5.06f));
             this.ShieldDoor(new Vector3(89.32f, 986.08f, -64.7f), new Vector3(0, 270, 0));
             this.StreetLight(new Vector3(83.44f, 991.15f, -66.02f), new Vector3(13.55f, -62.56f, 180), new Vector3(3.43f, 3.43f, 3.43f));
-            this.Fly(new Vector3(86.46f, 992.48f, -64.56f), new Vector3(0.58f, 2f, 0.48f));
+            this.Fly(new Vector3(86.45f, 992.38f, -64.38f), new Vector3(0.21f, 4.65f, 5.81f), new Vector3(0, 90, 0));
             //Fly(new Vector3(86.46f, 992.48f, -64.56f), new Vector3(0.58f, 1f, 0.48f));
         }
 
         public void OnWaitingForPlayers()
         {
-            Log.Info("wfp");
+            Log.Info("Поиск игроков");
         }
 
         private void SpawnHCZDoor(Vector3 position)
@@ -53,6 +54,7 @@ namespace DoorStreet
             gameObject.transform.localScale = new Vector3(2f, 1.48f, 1f);
             NetworkServer.Spawn(gameObject);
         }
+
 
         private void StenaPered(Vector3 position)
         {
@@ -85,12 +87,13 @@ namespace DoorStreet
             
         }
 
-        private void Fly(Vector3 position, Vector3 scale)
+        private void Fly(Vector3 position, Vector3 scale, Vector3 rotation)
         {
             Primitive cubik = Primitive.Create();
             cubik.Position = position;
             cubik.Scale = scale;
-            cubik.Type = PrimitiveType.Plane;
+            cubik.Rotation = Quaternion.Euler(rotation);
+            cubik.Type = PrimitiveType.Cube;
             cubik.Spawn();
 
         }

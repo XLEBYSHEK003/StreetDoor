@@ -6,7 +6,7 @@ namespace DoorStreet
 {
     public class Config : IConfig
     {
-        [Description("Плагин на двери возле ХАОС работает?.")]
+        [Description("Плагин SrteetDoor работает?")]
         public bool IsEnabled { get; set; } = true;
         
     }
