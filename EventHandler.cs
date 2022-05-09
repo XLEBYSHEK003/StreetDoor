@@ -1,68 +1,108 @@
 ﻿using System;
 using Exiled.API.Features.Toys;
 using Exiled.API.Features;
+using Exiled.Events.EventArgs;
 using Mirror;
 using UnityEngine;
 
-namespace DoorStreet
+namespace StreetDoor
 {
     internal class EventHandler
     {
 
         public void OnRoundStart()
         {
-            SpawnHCZDoor(new Vector3(14.332f, 995.2103f, -43.624f));
-            SpawnHCZDoor(new Vector3(14.3f, 995.2103f, -23.542f));
-            StreetLight(new Vector3(83.44f, 991.15f, -66.02f), new Vector3(13.55f, -62.56f, 180), new Vector3(3.43f, 3.43f, 3.43f));
-            SpawnCube(new Vector3(83.6f, 987.94f, -64.85f)); 
-            SpawnCube(new Vector3(83.6f, 991.05f, -64.85f));
-            SpawnCube(new Vector3(84.62f, 988.68f, -69.135f), new Vector3(-0.13f, 1.97f, 4.65f), new Vector3(0, 0, 90));
-            SpawnCube(new Vector3(86.45f, 987.94f, -62.155f), new Vector3(0, -90, 0), new Vector3(0.21f, 1.7f, 5.8f));
-            SpawnCube(new Vector3(86.45f, 991.05f, -62.155f), new Vector3(0, -90, 0), new Vector3(0.21f, 2.85f, 5.8f));
-            SpawnCube(new Vector3(89.31f, 991.62f, -64.62f), new Vector3(0, 0, 0), new Vector3(0.08f, 1.7f, 5.06f));
-            SpawnCube(new Vector3(89.35f, 986.08f, -64.7f), new Vector3(0, 270, 0));
-            SpawnCube(new Vector3(86.45f, 992.36f, -64.2f), new Vector3(0.21f, 4.97f, 5.81f), new Vector3(0, 90, 90));
+
+            Cubik(new Vector3(83.58f, 991.23f, -59.3f), new Vector3(0.26f, 2.4f, 15.47f), new Vector3(0, 0, 0)); //Перед верх
+            Cubik(new Vector3(83.58f, 987.9f, -54.83f), new Vector3(0.26f, 1.91f, 6.5f), new Vector3(0, 0, 0)); //Перед низ лево
+            Cubik(new Vector3(83.58f, 987.9f, -63.55f), new Vector3(0.26f, 1.91f, 6.7f), new Vector3(0, 0, 0)); //Перед низ право
+            Cubik(new Vector3(84.9f, 991.02f, -59.36f), new Vector3(0.26f, 2.4f, 15.47f), new Vector3(0, 0, 90)); //Потолок
+            Cubik(new Vector3(85.97f, 990.57f, -59.24f), new Vector3(0.26f, 1.1f, 15.7f), new Vector3(0, 0, 0)); //зад верх
+            Cubik(new Vector3(85.97f, 988.66f, -63.69f), new Vector3(0.26f, 2.94f, 6.8f), new Vector3(0, 0, 0)); //Зад низ лево
+            Cubik(new Vector3(85.97f, 988.66f, -54.79f), new Vector3(0.26f, 2.94f, 6.35f), new Vector3(0, 0, 0)); // Зад низ право
+            Cubik(new Vector3(90.36f, 989.1f, -54.1f), new Vector3(9.25f, 0.1f, 4.93f), new Vector3(0, 0, -25)); // Лестница
+            Cubik(new Vector3(86.44f, 991.37f, -66.93f), new Vector3(0.26f, 2.34f, 5.65f), new Vector3(0, 90, 0)); // Верх Верх Комната
+            Cubik(new Vector3(86.36f, 989.98f, -67.14f), new Vector3(0.65f, 5.69f, 1.03f), new Vector3(0, 90, 0)); // Верх право стена комната
+            Cubik(new Vector3(85.55f, 988.18f, -70.32f), new Vector3(0.24f, 5.63f, 1.65f), new Vector3(0, 0, 90)); // Полка для оружия
+            // Двери
+            SpawnEZDoor(new Vector3(83.57f, 987.16f -59.21f), new Vector3(0, 90, 0));
+            SpawnEZDoor(new Vector3(85.94f, 987.16f -59.1f), new Vector3(0, 90, 0));
+            SpawnHCZDoor(new Vector3(87.72f, 987.16f, -66.86f), new Vector3(0, 0, 0));
+            //Свет
+            Light(new Vector3(83f, 990.9f, -59.25f), Color.red, 5f); // Красная лампочка над дверью
+            Light(new Vector3(86.4f, 990.53f, -59.19f), Color.red, 5f); // Красная лампочка над дверью 2
+            Light(new Vector3(86.4f, 992.01f, -68.91f), Color.blue, 5f); //Синяя лампочка
+
+            //Двери у ХАОС
+            if (Config.SpawnDoor == true) 
+            {  
+                SpawnHCZDoor(new Vector3(14.332f, 995.2103f, -43.624f), new Vector3 (0, 0, 0));
+                SpawnHCZDoor(new Vector3(14.3f, 995.2103f, -23.542f), new Vector3(0, 0, 0));
+            }    
 
         }
 
         public void OnWaitingForPlayers()
         {
-            Log.Info("Player finding");
+            Log.Info("Поиск игры");
         }
 
-        private void SpawnHCZDoor(Vector3 position)
+        public GameObject CubikDestroy = GameObject.Find("cubik");
+        public void OnRoundEnd(EndingRoundEventArgs ev)
+        {
+
+            NetworkServer.UnSpawn(CubikDestroy);
+            NetworkServer.Destroy(CubikDestroy);
+
+        }
+
+        private void SpawnHCZDoor(Vector3 position, Vector3 rotation)
         {
             GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(NetworkManager.singleton.spawnPrefabs.Find((GameObject p) => p.gameObject.name == "HCZ BreakableDoor"));
+            
             gameObject.transform.position = position;
+            gameObject.transform.Rotate(rotation);
             gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
             NetworkServer.Spawn(gameObject);
         }
 
-        private void ShieldDoor(Vector3 position, Vector3 rotation)
+        private void SpawnEZDoor(Vector3 position, Vector3 rotation)
         {
-            GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(NetworkManager.singleton.spawnPrefabs.Find((GameObject p) => p.gameObject.name == "EZ BreakableDoor"));
-            gameObject.transform.position = position;
-            gameObject.transform.Rotate(rotation);
-            gameObject.transform.localScale = new Vector3(2f, 1.48f, 1f);
-            NetworkServer.Spawn(gameObject);
+            GameObject EZDoor = UnityEngine.Object.Instantiate<GameObject>(NetworkManager.singleton.spawnPrefabs.Find((GameObject p) => p.gameObject.name == "EZ BrokenDoor"));
+
+            EZDoor.transform.position = position;
+            EZDoor.transform.Rotate(rotation);
+            EZDoor.transform.localScale = new Vector3(1.18f, 0.9f, 1f);
+            NetworkServer.Spawn(EZDoor);
         }
 
-        private void SpawnCube(Vector3 position)
+
+
+        private void Cubik(Vector3 position, Vector3 scale, Vector3 rotation)
         {
             Primitive cubik = Primitive.Create();
+
             cubik.Position = position;
-            cubik.Scale = new Vector3(0.21f, 1.7f, 5.6f);
+            cubik.Scale = scale;
+            cubik.Rotation = Quaternion.Euler(rotation);
             cubik.Type = PrimitiveType.Cube;
             cubik.Spawn();
+
         }
 
-        private void StreetLight(Vector3 position, Vector3 rotation, Vector3 scale)
+        private void Light(Vector3 position, Color color, float y)
         {
-            Light StreesLight = Light.Create();
-            StreesLight.Position = position;
-            StreesLight.Scale = scale;
-            StreesLight.Rotation = Quaternion.Euler(rotation);
-            StreesLight.Spawn();
+
+            Exiled.API.Features.Toys.Light StreetLight = Exiled.API.Features.Toys.Light.Create();
+
+            StreetLight.Position = position;
+            StreetLight.Color = color;
+            StreetLight.Range = y;
+            StreetLight.Spawn();
         }
+
+        public Plugin plugin;
+
+        private Config Config;
     }
 }
